@@ -2,7 +2,6 @@
 layout: default
 title: Home
 ---
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -39,5 +38,3 @@ title: Home
 <script src="script.js"></script>
 </body>
 </html>
-# Welcome to my Hotel Website!
-This is the main page that people will see when they visit my URL.
