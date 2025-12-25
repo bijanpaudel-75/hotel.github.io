@@ -1,0 +1,130 @@
+
+const hotels = [
+    {id: 1, name: "Mountain View Retreat", city: "Kathmandu, Nepal", price: 40, rating: 4.3, img: "https://static.wixstatic.com/media/467982_619b353c62a44150a84981ae3c09cf86~mv2.jpg/v1/fill/w_2500,h_1666,al_c/467982_619b353c62a44150a84981ae3c09cf86~mv2.jpg", desc: "A serene and beautiful retreat offering panoramic mountain views. Enjoy local cuisine and friendly service. Includes free breakfast and high-speed Wi-Fi.", tags: ["Popular"]},
+    {id: 2, name: "Lakeside Paradise Lodge", city: "Pokhara, Nepal", price: 55, rating: 4.7, img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600", desc: "Experience pure tranquility by Phewa Lake. Private balconies, spacious rooms, and easy access to boating and local markets. Rated excellent for location.", tags: ["New"]},
+    {id: 3, name: "Delhi Comfort Inn", city: "Delhi, India", price: 30, rating: 4.0, img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600", desc: "Comfortable, clean, and budget-friendly hotel located close to the city's main transport links. Perfect for business and short stays. Excellent value.", tags: []},
+    {id: 4, name: "Bangkok Grand Stay Tower", city: "Bangkok, Thailand", price: 45, rating: 4.5, img: "https://luxuriate.life/wp-content/uploads/2025/10/01-lebua-drone-shot.jpg", desc: "A luxurious 5-star experience with a rooftop pool and world-class dining. Central location for easy exploration of Bangkok's nightlife and temples.", tags: ["Luxury"]}
+];
+
+function searchHotels() {
+  const searchInput = document.getElementById("name_hotel").value.trim().toLowerCase();
+  if (!searchInput) {
+    displayHotels(hotels);
+    return;
+  }
+  const matchedHotels = hotels.filter(hotel => 
+    hotel.name.toLowerCase().includes(searchInput) || 
+    hotel.city.toLowerCase().includes(searchInput)
+  );
+  if (matchedHotels.length > 0) {
+    displayHotels(matchedHotels);
+  } else {
+    const hotelContainer = document.getElementById("hotel_container"); 
+    hotelContainer.innerHTML = `<p class="no-results">No hotels found matching "${searchInput}"</p>`;
+  }
+}
+function displayHotels(list) {
+    const container = document.getElementById("hotel-list");
+    container.innerHTML = "";
+
+    if (list.length === 0) {
+        container.innerHTML = "<p style='text-align:center; padding: 50px; font-size: 18px; color: #7f8c8d;'>No stays found matching your budget. Try adjusting your search!</p>";
+        return;
+    }
+
+    list.forEach(h => {
+        const card = document.createElement("div");
+        card.className = "hotel-card";
+        card.onclick = () => showDetails(h);
+        
+        const tagsHtml = h.tags && h.tags.length > 0 
+            ? `<div class="tag">${h.tags[0]}</div>`
+            : '';
+
+        card.innerHTML = `
+            ${tagsHtml}
+            <img src="${h.img}" alt="${h.name} image" />
+            <div class="hotel-info">
+                <h3>${h.name}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> ${h.city}</p>
+                <div class="price-rating-container">
+                    <p class="price">$${h.price} / night</p>
+                    <p class="rating"> ${h.rating}</p>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+function showDetails(hotel) {
+    document.getElementById("search-page").classList.remove("active");
+    document.getElementById("details-page").classList.add("active");
+
+    const details = document.getElementById("hotel-details");
+    details.innerHTML = `
+        <h2>${hotel.name}</h2>
+        <img src="${hotel.img}" alt="${hotel.name} view" />
+        <p><strong><i class="fas fa-map-marker-alt"></i> City:</strong> ${hotel.city}</p>
+        <p><strong><i class="fas fa-money-bill-wave"></i> Price:</strong> <span class="price">$${hotel.price} / night</span></p>
+        <p><strong><i class="fas fa-star"></i> Rating:</strong> <span class="rating"> ${hotel.rating} / 5.0</span></p>
+        <p><strong><i class="fas fa-info-circle"></i> Description:</strong> ${hotel.desc}</p>
+        
+        <button class="book-btn" onclick="initiateBooking('${hotel.name}', ${hotel.price})">
+            <i class="fab fa-paypal"></i> Book Now with PayPal
+        </button>
+    `;
+    window.scrollTo(0, 0); // Scroll to top of the page on detail view
+}
+
+// Function to simulate the PayPal transition
+function initiateBooking(hotelName, price) {
+   document.getElementById("search-page").classList.remove("active");
+    document.getElementById("details-page").classList.add("active");
+  
+    const details = document.getElementById("hotel-details");
+    details.innerHTML=`
+    <div class="details-container">
+        <form action="/submit" method="post" class="booking-form">
+          <p style="margin-top:20px;">Redirecting to PayPal for booking <strong>${hotelName}</strong> at <strong>$${price}</strong>...</p>
+        <br> 
+         <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <lable for="checkin">Check-in Date:</lable>
+        <input type="date" id="checkin" name="checkin" required>
+        <br><br>
+        <label for="checkout">Check-out Date:</label>
+        <input type="date" id="checkout" name="checkout" required>
+        <br><br>
+        <label for="guests">Number of Guests:</label>
+        <input type="number" id="guests" name="guests" min="1" required>
+        <br><br>
+        <label for="requests">Special Requests:</label>
+        <textarea id="requests" name="requests" rows="4" cols="30"></textarea>
+        <br><br>    
+        <lable for="account">paypal acccount: </lable>
+        <input type="email" id="paypal-email" name="paypal-email" pattern="^[^@\s]+@[^@\s]+\.[^@\s]+$" required>
+        <br><br>
+        <input type="submit" value="Submit" onclick="done()" class="book-btn "><br>
+          </form>
+    </div>
+    `;
+    // In a real application, you would put the PayPal integration code here, 
+    // such as redirecting the user to a PayPal link or initializing the SDK.
+}
+function done(){
+    alert("Booking submitted! You will receive a confirmation email shortly.");
+}
+
+
+function goBack() {
+    document.getElementById("details-page").classList.remove("active");
+    document.getElementById("search-page").classList.add("active");
+}
+
+// Initial display
+searchHotels();
