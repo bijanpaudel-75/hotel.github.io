@@ -263,7 +263,24 @@ body {
         box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
         outline: none;
     }
+  .site-footer {
+    width: 100%;
+    padding: 20px;
+    background-color: #edeeef; 
+    text-align: center;
+    color: #333;
+    font-size: 0.9rem;
+}
 
+.footer-container a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-container a:hover {
+    text-decoration: underline;
+}
     @keyframes fadeIn {
         from {opacity: 0; transform: translateY(10px);}
         to {opacity: 1; transform: translateY(0);}
@@ -292,5 +309,9 @@ body {
         .details-container {
             margin: 15px;
             padding: 20px;
+        }
+        .site-footer{
+            width: 100%;
+            height:20%;
         }
     }
